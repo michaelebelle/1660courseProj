@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment                                          # 1
+metadata:
+  name: jupyter
+  labels:
+    app: jupyter
+spec:
+  selector:
+    matchLabels:
+      app: jupyter
+  replicas: 2                                             # 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate                                   # 3
+    rollingUpdate: 
+      maxUnavailable: 1                                   # 4
+      maxSurge: 1                                         # 5
+  template:
+    metadata:
+      labels:
+        app: jupyter                                  # 6
+    spec:
+      containers:
+        - image: mcr.microsoft.com/mmlspark/release
+          imagePullPolicy: Always                         # 7
+          name: jupyter
+          ports:
+            - containerPort: 80
